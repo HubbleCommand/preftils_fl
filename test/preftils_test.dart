@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 void main() {
   test('validate int', () async {
     SharedPreferences.setMockInitialValues({});
-    Preference<int> intpref = Preference("integer");
+    Preference<int> intpref = Preference("integer", 3);
 
     expect(await intpref.get(), 3);
 
