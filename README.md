@@ -33,7 +33,7 @@ If you already have an instance of `SharedPreference`, you can synchronously rea
 
 ```dart
 SharedPreferences prefs = await SharedPreferences.getInstance();
-int currentPreferenceValue = await intPreference.getSync(prefs);
+int currentPreferenceValue = intPreference.getSync(prefs);
 ```
 
 
