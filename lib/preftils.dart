@@ -18,6 +18,61 @@ class Preference<T/* extends Object*/>{
 
   Preference(this.key, this.defaultValue);
 
+  /// Retrieve the current value of the preference, optionally passing an instance of SharedPreferencesAsync
+  /// Can throw a CodableException if decoding fails
+  Future<T> get({SharedPreferencesAsync? prefs, T? defaultValue}) async {
+    SharedPreferencesAsync p = prefs ?? SharedPreferencesAsync();
+    switch (this.defaultValue) {
+      case int _: return await p.getInt(key) as T? ?? defaultValue ?? this.defaultValue;
+      case bool _: return await p.getBool(key) as T? ?? defaultValue ?? this.defaultValue;
+      case double _: return await p.getDouble(key) as T? ?? defaultValue ?? this.defaultValue;
+      case String _: return await p.getString(key) as T? ?? defaultValue ?? this.defaultValue;
+      case List<String> _: return await p.getStringList(key) as T? ?? defaultValue ?? this.defaultValue;
+      case Codable codable:
+        String? pref = await p.getString(key);
+        if (pref == null) {
+          break;
+        }
+
+        try {
+          return codable.decode(pref) as T;
+        } finally {
+          throw CodableException("Failed to decode");
+        }
+    }
+    return defaultValue ?? this.defaultValue;
+  }
+
+  /// Set the value of the preference, optionally pass an instance of SharedPreferences to speed things up
+  Future<void> set(T value, {SharedPreferencesAsync? prefs}) async {
+    SharedPreferencesAsync p = prefs ?? SharedPreferencesAsync();
+    switch (defaultValue) {
+      case int _:
+        return p.setInt(key, value as int);
+      case bool _:
+        return p.setBool(key, value as bool);
+      case double _:
+        return p.setDouble(key, value as double);
+      case String _:
+        return p.setString(key, value as String);
+      case const (List<String>) :
+        return p.setStringList(key, value as List<String>);
+      case Codable codable:
+        return p.setString(key, codable.encode());
+      default:
+        return Future.value();
+    }
+  }
+}
+
+
+@Deprecated("Use the newer Preference class that uses SharedPreferencesAsync")
+class PreferenceSync<T/* extends Object*/>{
+  final String key;
+  final T defaultValue;
+
+  PreferenceSync(this.key, this.defaultValue);
+
   /// Synchronously retrieve the current value of the preference, passing an instance of SharedPreferences is required
   /// Can throw a CodableException if decoding fails
   T getSync(SharedPreferences prefs, {T? defaultValue}) {
