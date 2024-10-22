@@ -12,11 +12,6 @@ void main() {
 
     expect(await intpref.get(), 3);
 
-    //These will fail, as expected
-    //intpref.set("a");
-    //SharedPreferences prefs = await SharedPreferences.getInstance();
-    //intpref.set("a", prefs:prefs);
-
     intpref.set(7);
     expect(await intpref.get(), 7);
   });
