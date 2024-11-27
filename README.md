@@ -1,5 +1,7 @@
 A Flutter plugin that adds type safety when working with SharedPreferences.
 
+The pure Android version can be found [here](https://github.com/HubbleCommand/preftils).
+
 [![pub package](https://img.shields.io/pub/v/preftils.svg)](https://pub.dev/packages/preftils)
 
 
